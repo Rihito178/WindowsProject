@@ -23,7 +23,7 @@ namespace Camera
 
 	//ビュー行列を取得
 	XMMATRIX GetViewMatrix();
-	 
+
 	//プロジェクション行列を取得
 	XMMATRIX GetProjectionMatrix();
 };
