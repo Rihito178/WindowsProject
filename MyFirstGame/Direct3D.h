@@ -7,6 +7,8 @@
 #define SAFE_DELETE(p) if(p != nullptr){ delete p; p = nullptr;}
 #define SAFE_RELEASE(p) if(p != nullptr){ p->Release(); p = nullptr;}
 
+
+
 namespace Direct3D
 {
 	//extern‚Í‚Ç‚±‚©‚ÉÀÛ‚Ì’è‹`•¶‚ª‚ ‚é‚¼‚Á‚Ä‚±‚Æ
