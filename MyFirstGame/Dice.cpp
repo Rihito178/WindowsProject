@@ -129,6 +129,9 @@ HRESULT Dice::Initialize()
 
 void Dice::Draw(XMMATRIX& worldMatrix)
 {
+
+	Direct3D::SetShader(SHADER_3D);
+
 	//コンスタントバッファに渡す情報
 	CONSTANT_BUFFER cb;
 	cb.matWVP = XMMatrixTranspose(worldMatrix * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
