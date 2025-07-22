@@ -20,7 +20,7 @@ void Camera::Initialize()
 void Camera::Update()
 {
 	static float angle = 0.0f;
-	angle += 0.01f; // 毎フレーム少しずつ回転（速度は調整可）
+	angle += 0.00f; // 毎フレーム少しずつ回転（速度は調整可）
 	//ビュー行列の作成
 	viewMatrix_ = XMMatrixLookAtLH(position_, target_, XMVectorSet(0, 1, 0, 0));
 
