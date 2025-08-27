@@ -1,12 +1,13 @@
-#include "Dice.h"
-#include "Texture.h"
-#include "Camera.h"
+ï»¿#include "Dice.h"
+#include <string>
 #include <DirectXMath.h>
+#include "Camera.h"
 
 using namespace DirectX;
 
+//7/15éŒ²ç”»40:00ã”ã‚ç¢ºèªâ‡’å®Œäº†
+
 Dice::Dice()
-	: Quad()
 {
 }
 
@@ -19,157 +20,159 @@ HRESULT Dice::Initialize()
 	VERTEX vertices[] =
 	{
 		//{{position}, {uv}}
-		{{ -1.0f,  1.0f, -1.0f, 0.0f}, {0.0f,   0.0f}, {0.0f, 0.0f, -1.0f, 0.0f}},// ŽlŠpŒ`‚Ì’¸“_i¶ãj
-		{{  1.0f,  1.0f, -1.0f, 0.0f}, {0.25f,  0.0f}, {0.0f, 0.0f, -1.0f, 0.0f} },// ŽlŠpŒ`‚Ì’¸“_i‰Eãj
-		{{  1.0f, -1.0f, -1.0f, 0.0f}, {0.25f,  0.5f}, {0.0f, 0.0f, -1.0f, 0.0f} },// ŽlŠpŒ`‚Ì’¸“_i‰E‰ºj
-		{{ -1.0f, -1.0f, -1.0f, 0.0f}, {0.0f,   0.5f}, {0.0f, 0.0f, -1.0f, 0.0f}},	// ŽlŠpŒ`‚Ì’¸“_i¶‰ºj	
-		//{{position}, {uv}}
-		{{ -1.0f,  1.0f, +1.0f, 0.0f}, {0.25f,  0.5f}, {0.0f, 0.0f, 1.0f, 0.0f}},// ŽlŠpŒ`‚Ì’¸“_i¶ãj
-		{{  1.0f,  1.0f, +1.0f, 0.0f}, {0.5f,  0.5f},  {0.0f, 0.0f, 1.0f, 0.0f}},// ŽlŠpŒ`‚Ì’¸“_i‰Eãj
-		{{  1.0f, -1.0f, +1.0f, 0.0f}, {0.5f,  1.0f},  {0.0f, 0.0f, 1.0f, 0.0f}},// ŽlŠpŒ`‚Ì’¸“_i‰E‰ºj
-		{{ -1.0f, -1.0f, +1.0f, 0.0f}, {0.25f,  1.0f}, {0.0f, 0.0f, 1.0f, 0.0f}},// ŽlŠpŒ`‚Ì’¸“_i¶‰ºj	
+		  {{ -1.0f,  1.0f, -1.0f, 0.0f}, {0.0f,   0.0f}, {0.0f, 0.0f, -1.0f, 0.0f}}, // å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå·¦ä¸Šï¼‰
+		  {{  1.0f,  1.0f, -1.0f, 0.0f}, {0.25f,  0.0f}, {0.0f, 0.0f, -1.0f, 0.0f} }, // å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå³ä¸Šï¼‰
+		  {{  1.0f, -1.0f, -1.0f, 0.0f}, {0.25f,  0.5f}, {0.0f, 0.0f, -1.0f, 0.0f} }, // å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå³ä¸‹ï¼‰
+		  {{ -1.0f, -1.0f, -1.0f, 0.0f}, {0.0f,   0.5f}, {0.0f, 0.0f, -1.0f, 0.0f}}, // å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå·¦ä¸‹ï¼‰	
+		  //{{position}, {uv}}
+		  {{ -1.0f,  1.0f, +1.0f, 0.0f}, {0.25f,  0.5f}, {0.0f, 0.0f, 1.0f, 0.0f}},// å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå·¦ä¸Šï¼‰
+		  {{  1.0f,  1.0f, +1.0f, 0.0f}, {0.5f,  0.5f},  {0.0f, 0.0f, 1.0f, 0.0f}},// å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå³ä¸Šï¼‰
+		  {{  1.0f, -1.0f, +1.0f, 0.0f}, {0.5f,  1.0f},  {0.0f, 0.0f, 1.0f, 0.0f}},// å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå³ä¸‹ï¼‰
+		  {{ -1.0f, -1.0f, +1.0f, 0.0f}, {0.25f,  1.0f}, {0.0f, 0.0f, 1.0f, 0.0f}},// å››è§’å½¢ã®é ‚ç‚¹ï¼ˆå·¦ä¸‹ï¼‰	
 
-		// ‰E–Ê
-		{{1.0f, 1.0f, -1.0f, 0.0f}, { 0.0f,  1.0f }, {1.0f, 0.0f, 0.0f, 0.0f}},
-		{{1.0f, 1.0f, +1.0f, 0.0f}, { 0.0f,  0.5f }, {1.0f, 0.0f, 0.0f, 0.0f}},
-		{{1.0f, -1.0f, 1.0f, 0.0f},	{ 0.25f,  0.5f}, {1.0f, 0.0f, 0.0f, 0.0f}},
-		{{1.0f, -1.0f,-1.0f, 0.0f}, { 0.25f,  1.0f}, {1.0f, 0.0f, 0.0f, 0.0f}},
+		  // å³é¢
+		  {{1.0f, 1.0f, -1.0f, 0.0f}, { 0.0f,  1.0f }, {1.0f, 0.0f, 0.0f, 0.0f}},
+		  {{1.0f, 1.0f, +1.0f, 0.0f}, { 0.0f,  0.5f }, {1.0f, 0.0f, 0.0f, 0.0f}},
+		  {{1.0f, -1.0f, 1.0f, 0.0f},	{ 0.25f,  0.5f}, {1.0f, 0.0f, 0.0f, 0.0f}},
+		  {{1.0f, -1.0f,-1.0f, 0.0f}, { 0.25f,  1.0f}, {1.0f, 0.0f, 0.0f, 0.0f}},
 
-		// ¶–Ê
-		{{-1.0f, 1.0f, -1.0f, 0.0f}, { 0.5f,  0.0f }, {-1.0f, 0.0f, 0.0f, 0.0f}},
-		{{-1.0f, 1.0f, +1.0f, 0.0f}, { 0.25f,  0.0f }, {-1.0f, 0.0f, 0.0f, 0.0f}},
-		{{-1.0f, -1.0f, 1.0f, 0.0f}, { 0.25f,  0.5f}, {-1.0f, 0.0f, 0.0f, 0.0f}},
-		{{-1.0f, -1.0f,-1.0f, 0.0f}, { 0.5f,  0.5f}, {-1.0f, 0.0f, 0.0f, 0.0f}},
+		  // å·¦é¢
+		  {{-1.0f, 1.0f, -1.0f, 0.0f}, { 0.5f,  0.0f }, {-1.0f, 0.0f, 0.0f, 0.0f}},
+		  {{-1.0f, 1.0f, +1.0f, 0.0f}, { 0.25f,  0.0f }, {-1.0f, 0.0f, 0.0f, 0.0f}},
+		  {{-1.0f, -1.0f, 1.0f, 0.0f}, { 0.25f,  0.5f}, {-1.0f, 0.0f, 0.0f, 0.0f}},
+		  {{-1.0f, -1.0f,-1.0f, 0.0f}, { 0.5f,  0.5f}, {-1.0f, 0.0f, 0.0f, 0.0f}},
 
-		// ã–Ê
-		{{-1.0f, 1.0f, 1.0f, 0.0f}, {0.5f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}},
-		{{ 1.0f, 1.0f, 1.0f, 0.0f}, {0.75f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}},
-		{{ 1.0f, 1.0f,-1.0f, 0.0f}, {0.75f, 0.5f}, {0.0f, 1.0f, 0.0f, 0.0f}},
-		{{-1.0f, 1.0f,-1.0f, 0.0f}, {0.5f, 0.5f}, {0.0f, 1.0f, 0.0f, 0.0f}},
+		  // ä¸Šé¢
+		  {{-1.0f, 1.0f, 1.0f, 0.0f}, {0.5f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}},
+		  {{ 1.0f, 1.0f, 1.0f, 0.0f}, {0.75f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}},
+		  {{ 1.0f, 1.0f,-1.0f, 0.0f}, {0.75f, 0.5f}, {0.0f, 1.0f, 0.0f, 0.0f}},
+		  {{-1.0f, 1.0f,-1.0f, 0.0f}, {0.5f, 0.5f}, {0.0f, 1.0f, 0.0f, 0.0f}},
 
-		// ’ê–Ê
-		{{-1.0f, -1.0f, 1.0f, 0.0f}, {0.75f, 0.0f}, {0.0f, -1.0f, 0.0f, 0.0f}},
-		{{ 1.0f, -1.0f, 1.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f, 0.0f}},
-		{{ 1.0f, -1.0f,-1.0f, 0.0f}, {1.0f, 0.5f}, {0.0f, -1.0f, 0.0f, 0.0f}},
-		{{-1.0f, -1.0f,-1.0f, 0.0f}, {0.75f, 0.5f}, {0.0f, -1.0f, 0.0f, 0.0f}},
+		  // åº•é¢
+		  {{-1.0f, -1.0f, 1.0f, 0.0f}, {0.75f, 0.0f}, {0.0f, -1.0f, 0.0f, 0.0f}},
+		  {{ 1.0f, -1.0f, 1.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f, 0.0f}},
+		  {{ 1.0f, -1.0f,-1.0f, 0.0f}, {1.0f, 0.5f}, {0.0f, -1.0f, 0.0f, 0.0f}},
+		  {{-1.0f, -1.0f,-1.0f, 0.0f}, {0.75f, 0.5f}, {0.0f, -1.0f, 0.0f, 0.0f}},
 	};
-
-	int index[] = {
-		 0, 1, 2, 0, 2, 3, // ‘O–Ê
-		 4, 6, 5, 4, 7, 6, // Œã–Ê
-		 8, 9 ,10, 8,10,11, //‰E‘¤
-		12,14,13,12,15,14,//¶‘¤
-		16,17,18,16,18,19,//ã‘¤
-		20,22,21,20,23,22 //‰º‘¤
-	};
-
-
-	HRESULT hr;
-	// ’¸“_ƒf[ƒ^—pƒoƒbƒtƒ@‚ÌÝ’è
-	D3D11_BUFFER_DESC bd_vertex;
-	bd_vertex.ByteWidth = sizeof(vertices);
-	bd_vertex.Usage = D3D11_USAGE_DEFAULT;
-	bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd_vertex.CPUAccessFlags = 0;
-	bd_vertex.MiscFlags = 0;
-	bd_vertex.StructureByteStride = 0;
-	D3D11_SUBRESOURCE_DATA data_vertex;
-	data_vertex.pSysMem = vertices;
-	hr = Direct3D::pDevice->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
-	if (FAILED(hr))
+	int index[] = 
 	{
-		MessageBox(nullptr, L"’¸“_ƒoƒbƒtƒ@‚Ìì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
-		return hr;
-	}
+		 0, 1, 2,  0, 2, 3,    // å‰é¢
+		 4, 6, 5,  4, 7, 6,    // èƒŒé¢
+		 8, 9,10,  8,10,11,    // å³é¢
+		12,14,13, 12,15,14,    // å·¦é¢
+		16,17,18, 16,18,19,    // ä¸Šé¢
+		20,22,21, 20,23,22     // åº•é¢
+	};
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ð¶¬‚·‚é
-	D3D11_BUFFER_DESC   bd;
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
+	D3D11_BUFFER_DESC vertexBufferDesc = {};
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(vertices);
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexData = {};
+	vertexData.pSysMem = vertices;
+
+	HRESULT vhr = Direct3D::pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &pVertexBuffer_);
+	if (FAILED(vhr)) return E_FAIL;
+
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
+	D3D11_BUFFER_DESC bd = {};
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof(index);
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData;
+	D3D11_SUBRESOURCE_DATA InitData = {};
 	InitData.pSysMem = index;
-	InitData.SysMemPitch = 0;
-	InitData.SysMemSlicePitch = 0;
-	hr = Direct3D::pDevice->CreateBuffer(&bd, &InitData, &pIndexBuffer_);
-	if (FAILED(hr))
-	{
-		MessageBox(nullptr, L"ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
-		return hr;
-	}
+	if (FAILED(Direct3D::pDevice->CreateBuffer(&bd, &InitData, &pIndexBuffer_))) return E_FAIL;
 
-	//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@ì¬
-	D3D11_BUFFER_DESC cb;
+	// ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡ä½œæˆ
+	D3D11_BUFFER_DESC cb = {};
 	cb.ByteWidth = sizeof(CONSTANT_BUFFER);
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb.MiscFlags = 0;
-	cb.StructureByteStride = 0;
+	if (FAILED(Direct3D::pDevice->CreateBuffer(&cb, nullptr, &pConstantBuffer_))) return E_FAIL;
 
-	// ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚Ìì¬
-	hr = Direct3D::pDevice->CreateBuffer(&cb, nullptr, &pConstantBuffer_);
-	if (FAILED(hr))
-	{
-		MessageBox(nullptr, L"ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚Ìì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
-		return hr;
-	}
+	// ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆ
+	D3D11_RASTERIZER_DESC rasterDesc = {};
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.FrontCounterClockwise = TRUE;
+	rasterDesc.DepthClipEnable = TRUE;
 
-	pTexture_ = new Texture();
-	pTexture_->Load("Assets\\dice.png");//‰æ‘œ‚ð•\Ž¦
+	ID3D11RasterizerState* pRasterState = nullptr;
+	if (FAILED(Direct3D::pDevice->CreateRasterizerState(&rasterDesc, &pRasterState))) return E_FAIL;
+
+	Direct3D::pContext->RSSetState(pRasterState);
+	pRasterState->Release();
+
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿ï¼ˆ6é¢ã«åŒã˜ç”»åƒï¼‰
+	pTexture_ = new Texture;
+	pTexture_->Load(L"Assets\\dice.png");//ç”»åƒã‚’è¡¨ç¤º
 
 	return S_OK;
-
-
-
 }
 
 void Dice::Draw(XMMATRIX& worldMatrix)
 {
+	//QuadData data[] = {
+	//	QuadData({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }),
+	//	QuadData({ 1.0f, 1.0f, 1.0f }, { 45.0f, 45.0f, 45.0f }, { 1.0f, 1.0f }),
+	//	QuadData({ -1.0f, -1.0f, -1.0f }, { -45.0f, -45.0f, -45.0f }, { 1.0f, 1.0f })
+	//};
+	//for (const auto& d : data)
+	//{
+	//	XMMATRIX mat = XMMatrixTranslation(d.position.x, d.position.y, d.position.z) *
+	//		XMMatrixRotationRollPitchYaw(XMConvertToRadians(d.rotate.x), XMConvertToRadians(d.rotate.y), XMConvertToRadians(d.rotate.z)) *
+	//		worldMatrix;
+	//	Quad::Draw(mat);
+	//}
 
-	Direct3D::SetShader(SHADER_3D);
-
-	//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚É“n‚·î•ñ
 	CONSTANT_BUFFER cb;
+
 	cb.matWVP = XMMatrixTranspose(worldMatrix * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
-	cb.matNormal = XMMatrixInverse(nullptr, worldMatrix);	//–@ü•ÏŠ·—p‚Ìs—ñ
-	cb.matWorld = XMMatrixTranspose(worldMatrix);
+
 
 
 	D3D11_MAPPED_SUBRESOURCE pdata;
-	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPU‚©‚ç‚Ìƒf[ƒ^ƒAƒNƒZƒX‚ðŽ~‚ß‚é
-	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// ƒf[ƒ^‚ð’l‚ð‘—‚é
-	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//ÄŠJ
+	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);//GPUã‹ã‚‰ã®ãƒ‡ãƒ¼ã‚¿ã‚¢ã‚¯ã‚»ã‚¹ã‚’æ­¢ã‚ã‚‹
+	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));//ãƒ‡ãƒ¼ã‚¿ã‚’é€ã‚‹
 
-	//’¸“_ƒoƒbƒtƒ@
+	ID3D11SamplerState* pSampler = pTexture_->GetSampler();
+
+	Direct3D::pContext->PSSetSamplers(0, 1, &pSampler);
+
+
+
+	ID3D11ShaderResourceView* pSRV = pTexture_->GetSRV();
+
+	Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
+
+
+
+	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//å†é–‹
+
+
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
 	Direct3D::pContext->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
 
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@[‚ðƒZƒbƒg
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ¼ã‚’ã‚»ãƒƒãƒˆ
 	stride = sizeof(int);
 	offset = 0;
 	Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_, DXGI_FORMAT_R32_UINT, 0);
 
-	//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@
-	Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//’¸“_ƒVƒF[ƒ_[—p	
-	Direct3D::pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ƒsƒNƒZƒ‹ƒVƒF[ƒ_[—p
-
-	ID3D11SamplerState* pSampler = pTexture_->GetSampler();
-	Direct3D::pContext->PSSetSamplers(0, 1, &pSampler);
-
-	ID3D11ShaderResourceView* pSRV = pTexture_->GetSRV();
-	Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
+	//ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡
+	Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ç”¨	
+	Direct3D::pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ç”¨
 
 
 
 	Direct3D::pContext->DrawIndexed(36, 0, 0);
 
-}
-
-void Dice::Release()
-{
 }
