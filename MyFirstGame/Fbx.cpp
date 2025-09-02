@@ -1,6 +1,19 @@
 #include "Fbx.h"
+#include "Direct3D.h"
+#include "Camera.h"
+#include <filesystem>
+
+
+namespace fs = std::filesystem;
 
 Fbx::Fbx()
+	:pVertexBuffer_(nullptr)
+	, pIndexBuffer_(nullptr)
+	, pConstantBuffer_(nullptr)
+	, vertexCount_(0)
+	, polygonCount_(0)
+	, materialCount_(0)
+
 {
 }
 
@@ -60,13 +73,11 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 			//頂点の位置
 			FbxVector4 pos = mesh->GetControlPointAt(index);
 			vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
-		}
-		//頂点のUV
-		FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
-		int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
-		FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
-		vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+		}		
 	}
+	//頂点バッファ作成
+
+
 }
 
 //インデックスバッファ準備
@@ -110,9 +121,13 @@ void Fbx::InitMaterial(FbxNode* pNode)
 		{
 			FbxFileTexture* pTexture = lProperty.GetSrcObject<FbxFileTexture>(0);
 			const char* textureFileName = pTexture->GetFileName();
-			int i = 0;
-			i++;
+			fs::path tPath(textureFilePath);
+			if (fs::is_regular_file(tPath))
+			{
+				int a = 0;
+				a++;
 
+			}
 
 		}
 
