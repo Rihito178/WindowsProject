@@ -78,6 +78,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Camera::Initialize();
 	HRESULT hr;
 	hr = Direct3D::Initialize(WINDOW_WIDTH, WINDOW_HEIGHT, hWnd);
+
 	if (FAILED(hr))
 	{
 		PostQuitMessage(0);

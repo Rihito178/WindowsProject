@@ -73,6 +73,13 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 			//頂点の位置
 			FbxVector4 pos = mesh->GetControlPointAt(index);
 			vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+			
+			//頂点のUV
+			FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
+			int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
+			FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
+			vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+
 		}		
 	}
 	//頂点バッファ作成
@@ -96,6 +103,7 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 			index[count] = mesh->GetPolygonVertex(poly, vertex);
 			count++;
 		}
+
 	}
 
 
@@ -124,12 +132,18 @@ void Fbx::InitMaterial(FbxNode* pNode)
 		{
 			FbxFileTexture* pTexture = lProperty.GetSrcObject<FbxFileTexture>(0);
 			const char* textureFilePath = pTexture->GetFileName();
+			fs::path tPath(textureFilePath);
 
 			//ファイルからテクスチャ作成
-			materialList_[i].pTexture = ●●●●●●●●;//ファイル名
-			materialList_[i].pTexture->●●●●●●●●●●●●;
+			//materialList_[i].pTexture = ●●●●●●●●;//ファイル名
+			//materialList_[i].pTexture->●●●●●●●●●●●●;
 			
-			fs::path tPath(textureFilePath);
+			//ファイル名+拡張だけにする
+			//char name[_MAX_FNAME];	//ファイル名
+			//char ext[_MAX_EXT];	//拡張子
+			//_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
+			//wsprintf(name, "%s%s", name, ext);
+			
 			if (fs::is_regular_file(tPath))
 			{
 				int a = 0;
@@ -143,7 +157,11 @@ void Fbx::InitMaterial(FbxNode* pNode)
 			}
 
 		}
-		
+		//テクスチャ無し
+		else
+		{
+
+		}
 	}
 
 }
