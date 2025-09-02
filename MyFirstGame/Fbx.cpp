@@ -78,6 +78,7 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 	//頂点バッファ作成
 
 
+
 }
 
 //インデックスバッファ準備
@@ -96,6 +97,8 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 			count++;
 		}
 	}
+
+
 }
 
 void Fbx::IntConstantBuffer()
@@ -120,7 +123,12 @@ void Fbx::InitMaterial(FbxNode* pNode)
 		if (fileTextureCount>0)
 		{
 			FbxFileTexture* pTexture = lProperty.GetSrcObject<FbxFileTexture>(0);
-			const char* textureFileName = pTexture->GetFileName();
+			const char* textureFilePath = pTexture->GetFileName();
+
+			//ファイルからテクスチャ作成
+			materialList_[i].pTexture = ●●●●●●●●;//ファイル名
+			materialList_[i].pTexture->●●●●●●●●●●●●;
+			
 			fs::path tPath(textureFilePath);
 			if (fs::is_regular_file(tPath))
 			{
@@ -128,14 +136,14 @@ void Fbx::InitMaterial(FbxNode* pNode)
 				a++;
 
 			}
+			//テクスチャ無し
+			else
+			{
+
+			}
 
 		}
-
-		//テクスチャ無し
-		else
-		{
-
-		}
+		
 	}
 
 }
