@@ -31,17 +31,100 @@ HRESULT Fbx::Load(std::string fileName)
 	polygonCount_ = mesh->GetPolygonCount();	//ポリゴンの数
 
 	InitVertex(mesh);		//頂点バッファ準備
-
+	InitIndex(mesh);		//インデックスバッファ準備
+	IntConstantBuffer();	//コンスタントバッファ準備
+	InitMaterial(pNode);
+	
+	materialCount_ = pNode->GetMaterialCount();
 
 	//マネージャ解放
 	pFbxManager->Destroy();
 	return S_OK;
 }
+
 //頂点バッファ準備
 void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 {
+	//頂点情報を入れる配列
+	VERTEX* vertices = new VERTEX[vertexCount_];
+
+	//全ポリゴン
+	for (DWORD poly = 0; poly < polygonCount_; poly++)
+	{
+		//3頂点分
+		for (int vertex = 0; vertex < 3; vertex++)
+		{
+			//調べる頂点の番号
+			int index = mesh->GetPolygonVertex(poly, vertex);
+
+			//頂点の位置
+			FbxVector4 pos = mesh->GetControlPointAt(index);
+			vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+		}
+		//頂点のUV
+		FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
+		int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
+		FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
+		vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+	}
+}
+
+//インデックスバッファ準備
+void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
+{
+	int* index = new int[polygonCount_ * 3];
+	int count = 0;
+
+	//全ポリゴン
+	for (DWORD poly = 0; poly < polygonCount_; poly++)
+	{
+		//3頂点分
+		for (DWORD vertex = 0; vertex < 3; vertex++)
+		{
+			index[count] = mesh->GetPolygonVertex(poly, vertex);
+			count++;
+		}
+	}
+}
+
+void Fbx::IntConstantBuffer()
+{
+}
+
+void Fbx::InitMaterial(FbxNode* pNode)
+{
+	materialList_.resize(materialCount_);
+	for (int i = 0;i < materialCount_;i++)
+	{
+		//i番目のマテリアル情報を取得
+		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);
+
+		//テクスチャ情報
+		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
+
+		//テクスチャの数数
+		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+
+		//テクスチャあり
+		if (fileTextureCount>0)
+		{
+			FbxFileTexture* pTexture = lProperty.GetSrcObject<FbxFileTexture>(0);
+			const char* textureFileName = pTexture->GetFileName();
+			int i = 0;
+			i++;
+
+
+		}
+
+		//テクスチャ無し
+		else
+		{
+
+		}
+	}
 
 }
+
 void Fbx::Draw(Transform& transform)
 {
 }
