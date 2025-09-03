@@ -9,7 +9,7 @@
 
 namespace Direct3D
 {
-	//extern‚Í‚Ç‚±‚©‚ÉÀÛ‚Ì’è‹`•¶‚ª‚ ‚é‚¼‚Á‚Ä‚±‚Æ
+	//extern‚Í‚Ç‚±‚©‚ÉÀÛ‚Ì’è‹`•¶‚ª‚ ‚é
 	extern ID3D11Device* pDevice;
 	extern ID3D11DeviceContext* pContext;
 	//extern ID3D11Device* pContext;
