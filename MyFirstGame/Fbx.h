@@ -27,6 +27,7 @@ public:
 private:
 	struct MATERIAL
 	{
+		XMFLOAT4 diffuse;
 		Texture* pTexture;
 	};
 
@@ -34,11 +35,14 @@ private:
 	{
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
+		XMFLOAT4 diffuse;
+		BOOL materialFlag;
 	};
 	struct VERTEX
 	{
 		XMVECTOR position;
 		XMVECTOR uv;
+		XMVECTOR normal;
 	};
 
 	
@@ -46,6 +50,8 @@ private:
 	ID3D11Buffer** pIndexBuffer_;
 	ID3D11Buffer* pConstantBuffer_;
 	std::vector<MATERIAL> materialList_;
+	std::vector <int> indexCountList_;
+
 
 	int vertexCount_;
 	int polygonCount_;

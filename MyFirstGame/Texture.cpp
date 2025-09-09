@@ -22,8 +22,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	ScratchImage image;   //画像本体
 
 	HRESULT hr;
-
-	//実際に読んでゆくぅ　　　　　 
+	// 画像ファイルからテクスチャデータを読み込む　　　 
 
 	hr = LoadFromWICFile(fileName, WIC_FLAGS::WIC_FLAGS_NONE,
 

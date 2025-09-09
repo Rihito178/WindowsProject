@@ -2,6 +2,9 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include <filesystem>
+#include <cassert>
+#include <string>
+
 
 
 namespace fs = std::filesystem;
@@ -62,8 +65,25 @@ void Fbx::Draw(Transform& transform)
 
 	CONSTANT_BUFFER cb;
 	cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
-	cb.matNormal = XMMatrixIdentity();
+	cb.matNormal = transform.GetNormalMatrix();
 
+	for (int i = 0;i < materialCount_;i++)
+	{
+		if (materialList_[i].pTexture)
+		{
+			
+			cb.materialFlag = TRUE;
+			cb.diffuse = XMFLOAT4(1, 1, 1, 1);
+		}
+		else
+		{
+			cb.materialFlag = FALSE;
+			cb.diffuse = materialList_[i].diffuse;
+		}
+
+
+	}
+	
 	D3D11_MAPPED_SUBRESOURCE pdata;
 	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
 	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
@@ -85,7 +105,7 @@ void Fbx::Draw(Transform& transform)
 		Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
 
 		//コンスタントバッファ
-		Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
+		Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用
 		Direct3D::pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
 
 
@@ -98,10 +118,12 @@ void Fbx::Draw(Transform& transform)
 			Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
 		}
 
+
 		//描画
 		Direct3D::pContext->DrawIndexed(polygonCount_ * 3, 0, 0);
 	}
-}
+};
+
 
 
 
@@ -114,6 +136,9 @@ void Fbx::Release()
 //頂点バッファ準備
 void Fbx::InitVertex(FbxMesh* mesh)
 {
+
+	
+
 	//頂点情報を入れる配列
 	VERTEX* vertices = new VERTEX[vertexCount_];
 
@@ -138,6 +163,7 @@ void Fbx::InitVertex(FbxMesh* mesh)
 
 		}		
 	}
+
 	//頂点バッファ作成
 
 	HRESULT hr;
@@ -249,38 +275,29 @@ void Fbx::InitMaterial(FbxNode* pNode)
 		//テクスチャあり
 		if (fileTextureCount>0)
 		{
-			FbxFileTexture* pTexture = lProperty.GetSrcObject<FbxFileTexture>(0);
-			const char* textureFilePath = pTexture->GetFileName();
+			FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+			const char* textureFilePath = textureInfo->GetRelativeFileName();
+			
 			fs::path tPath(textureFilePath);
-
-			//ファイルからテクスチャ作成
-			//materialList_[i].pTexture = ●●●●●●●●;//ファイル名
-			//materialList_[i].pTexture->●●●●●●●●●●●●;
-			
-			//ファイル名+拡張だけにする
-			//char name[_MAX_FNAME];	//ファイル名
-			//char ext[_MAX_EXT];	//拡張子
-			//_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
-			//wsprintf(name, "%s%s", name, ext);
-			
-			if (fs::is_regular_file(tPath))
+			if(fs::is_regular_file(tPath))
 			{
-				int a = 0;
-				a++;
+				materialList_[i].pTexture = new Texture;
+				materialList_[i].pTexture->Load(textureFilePath);
+				
 
 			}
 			//テクスチャ無し
 			else
 			{
-
+				materialList_[i].pTexture = nullptr;
 			}
 
 		}
-		//テクスチャ無し
 		else
 		{
 			materialList_[i].pTexture = nullptr;
 		}
+	
 	}
 
 }
