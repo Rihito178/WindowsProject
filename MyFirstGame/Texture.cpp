@@ -1,13 +1,13 @@
 #include "Texture.h"
 #include "Direct3D.h"
-#include "Quad.h"
 #include <DirectXTex.h>
-#include <wincodec.h>
+
+// DirectXTexのライブラリをリンク
 #pragma comment(lib, "DirectXTex.lib")
 
 using namespace DirectX;
+
 Texture::Texture()
-	: pSampler_(nullptr), pSRV_(nullptr)
 {
 }
 
@@ -15,74 +15,50 @@ Texture::~Texture()
 {
 }
 
-HRESULT Texture::Load(LPCWSTR fileName)
+HRESULT Texture::Load(std::string fileName)
 {
 	TexMetadata metadata; //画像の付属情報
 
 	ScratchImage image;   //画像本体
 
 	HRESULT hr;
-	// 画像ファイルからテクスチャデータを読み込む　　　 
 
-	hr = LoadFromWICFile(fileName, WIC_FLAGS::WIC_FLAGS_NONE,
-
+	//実際に読んでゆくぅ　　　　　 
+	std::wstring wfileName(fileName.begin(), fileName.end());
+	hr = LoadFromWICFile(wfileName.c_str(), WIC_FLAGS::WIC_FLAGS_NONE,
 		&metadata, image);
-
-
-
 	if (FAILED(hr))
-
 	{
-
 		return S_FALSE;
-
 	}
 
-	D3D11_SAMPLER_DESC SamDesc{};
-	// MEMO: 線形補間もハードウェアでやってくれるらしい
+	D3D11_SAMPLER_DESC  SamDesc;
+	ZeroMemory(&SamDesc, sizeof(D3D11_SAMPLER_DESC));
 	SamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	// MEMO: 0~1の範囲を出た場合どうするか
 	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	hr = Direct3D::pDevice->CreateSamplerState(&SamDesc, &pSampler_);
+	Direct3D::pDevice->CreateSamplerState(&SamDesc, &pSampler_);
 
-	if (FAILED(hr))
-	{
-		return hr;
-	}
+	//シェーダーリソースビュー
 
-	// シェーダーリソースビュー
-	D3D11_SHADER_RESOURCE_VIEW_DESC srv{};
-
+	D3D11_SHADER_RESOURCE_VIEW_DESC srv = {};
 	srv.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	// MEMO: ここで3Dのテクスチャも指定できる
 	srv.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srv.Texture2D.MipLevels = 1;  // LODのミップマップレベル
-
-	
-	hr = CreateShaderResourceView(
-		Direct3D::pDevice,
-		image.GetImages(),
-		image.GetImageCount(),
-		metadata,
-		&pSRV_);
-
-	if (FAILED(hr))
-	{
-		return hr;
-	}
+	srv.Texture2D.MipLevels = 1;
+	hr = CreateShaderResourceView(Direct3D::pDevice,
+		image.GetImages(), image.GetImageCount(), metadata, &pSRV_);
 
 	return S_OK;
 }
+
 void Texture::Release()
 {
-	
-		pSampler_->Release();
-	
-	
-		pSRV_->Release();
-	
+	pSampler_->Release();
+	pSRV_->Release();
 }
 
-
+HRESULT Texture::Initialize()
+{
+	return E_NOTIMPL;
+}

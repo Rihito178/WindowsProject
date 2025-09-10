@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include <vector>
 
+
 #pragma comment(lib, "LibFbxSDK-MD.lib")
 #pragma comment(lib, "LibXml2-MD.lib")
 #pragma comment(lib, "zlib-MD.lib")
@@ -49,12 +50,12 @@ private:
 	ID3D11Buffer* pVertexBuffer_;
 	ID3D11Buffer** pIndexBuffer_;
 	ID3D11Buffer* pConstantBuffer_;
-	std::vector<MATERIAL> materialList_;
+	std::vector<MATERIAL> pMaterialList_;
 	std::vector <int> indexCountList_;
 
 
 	int vertexCount_;
 	int polygonCount_;
 	int materialCount_;
-
+	
 };

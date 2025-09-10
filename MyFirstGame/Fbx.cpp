@@ -2,26 +2,36 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include <filesystem>
-#include <cassert>
-#include <string>
+#include <assert.h>
+#include <windows.h>
+
 
 
 
 namespace fs = std::filesystem;
 
 Fbx::Fbx()
-	:pVertexBuffer_(nullptr)
+	: pVertexBuffer_(nullptr)
 	, pIndexBuffer_(nullptr)
 	, pConstantBuffer_(nullptr)
 	, vertexCount_(0)
 	, polygonCount_(0)
 	, materialCount_(0)
-
 {
 }
 
 HRESULT Fbx::Load(std::string fileName)
 {
+	using std::string;
+	string subDir("Assets");
+	fs::path currPath, basePath;
+	currPath = fs::current_path();
+	basePath = currPath;
+	currPath = currPath / subDir;
+	//fs::path subPath(currPath.string() + "\\" + subDir);
+	assert(fs::exists(currPath));//subPathはあります、という確認
+	fs::current_path(currPath);
+
 	//マネージャを生成
 	FbxManager* pFbxManager = FbxManager::Create();
 
@@ -34,7 +44,7 @@ HRESULT Fbx::Load(std::string fileName)
 	fbxImporter->Import(pFbxScene);
 	fbxImporter->Destroy();
 
-
+	//meshの情報を取得
 	//メッシュ情報を取得
 	FbxNode* rootNode = pFbxScene->GetRootNode();
 	FbxNode* pNode = rootNode->GetChild(0);
@@ -43,15 +53,17 @@ HRESULT Fbx::Load(std::string fileName)
 	//各情報の個数を取得
 
 	vertexCount_ = mesh->GetControlPointsCount();	//頂点の数
-
 	polygonCount_ = mesh->GetPolygonCount();	//ポリゴンの数
+	materialCount_ = pNode->GetMaterialCount(); //マテリアルの数
 
-	InitVertex(mesh);		//頂点バッファ準備
-	InitIndex(mesh);		//インデックスバッファ準備
-	InitConstantBuffer();	//コンスタントバッファ準備
+
+
+	InitVertex(mesh);
+	InitIndex(mesh);
+	InitConstantBuffer();
 	InitMaterial(pNode);
-	
-	materialCount_ = pNode->GetMaterialCount();
+
+	fs::current_path(basePath);
 
 	//マネージャ解放
 	pFbxManager->Destroy();
@@ -60,35 +72,28 @@ HRESULT Fbx::Load(std::string fileName)
 
 void Fbx::Draw(Transform& transform)
 {
-	//Direct3D::SetShader(SHADER_3D);
+	//Quadをアレンジ
+	Direct3D::SetShader(SHADER_3D);
 	transform.Calculation();
 
 	CONSTANT_BUFFER cb;
 	cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 	cb.matNormal = transform.GetNormalMatrix();
 
-	for (int i = 0;i < materialCount_;i++)
-	{
-		if (materialList_[i].pTexture)
-		{
-			
-			cb.materialFlag = TRUE;
-			cb.diffuse = XMFLOAT4(1, 1, 1, 1);
-		}
-		else
-		{
-			cb.materialFlag = FALSE;
-			cb.diffuse = materialList_[i].diffuse;
-		}
 
-
-	}
-	
-	D3D11_MAPPED_SUBRESOURCE pdata;
-	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
-	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
-
-	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
+	//for (int i = 0;i < materialCount_;i++)
+	//{
+	//	if (ppMaterialList_[i].pTexture)
+	//	{
+	//		cb.materialFlag = { 1, 1, 1,1 };
+	//		cb.diffuse = XMFLOAT4(1, 1, 1, 1);//保険
+	//	}
+	//	else
+	//	{
+	//		cb.materialFlag = { 0,0,0,0 };
+	//		cb.diffuse = ppMaterialList_[i].diffuse;
+	//	}
+	//}
 
 	//頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインにセット
 	//頂点バッファ
@@ -98,6 +103,22 @@ void Fbx::Draw(Transform& transform)
 
 	for (int i = 0; i < materialCount_; i++)
 	{
+		if (pMaterialList_[i].pTexture)
+		{
+			cb.materialFlag = TRUE;
+			cb.diffuse = XMFLOAT4(1, 1, 1, 1);//保険
+		}
+		else
+		{
+			cb.materialFlag = FALSE;
+			cb.diffuse = pMaterialList_[i].diffuse;
+		}
+
+		D3D11_MAPPED_SUBRESOURCE pdata;
+		Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
+		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
+
+		Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
 
 		// インデックスバッファーをセット
 		stride = sizeof(int);
@@ -105,45 +126,33 @@ void Fbx::Draw(Transform& transform)
 		Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
 
 		//コンスタントバッファ
-		Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用
+		Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
 		Direct3D::pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
 
 
-		if (materialList_[i].pTexture)
+		if (pMaterialList_[i].pTexture)
 		{
-			ID3D11SamplerState* pSampler = materialList_[i].pTexture->GetSampler();
+			ID3D11SamplerState* pSampler = pMaterialList_[i].pTexture->GetSampler();
 			Direct3D::pContext->PSSetSamplers(0, 1, &pSampler);
 
-			ID3D11ShaderResourceView* pSRV = materialList_[i].pTexture->GetSRV();
+			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
 			Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
 		}
 
-
 		//描画
-		Direct3D::pContext->DrawIndexed(polygonCount_ * 3, 0, 0);
+		Direct3D::pContext->DrawIndexed(indexCountList_[i], 0, 0);
 	}
-};
-
-
-
+}
 
 void Fbx::Release()
 {
 }
 
-
-
-//頂点バッファ準備
 void Fbx::InitVertex(FbxMesh* mesh)
 {
-
-	
-
-	//頂点情報を入れる配列
 	VERTEX* vertices = new VERTEX[vertexCount_];
-
 	//全ポリゴン
-	for (DWORD poly = 0; poly < polygonCount_; poly++)
+	for (long poly = 0; poly < polygonCount_; poly++)
 	{
 		//3頂点分
 		for (int vertex = 0; vertex < 3; vertex++)
@@ -153,19 +162,25 @@ void Fbx::InitVertex(FbxMesh* mesh)
 
 			//頂点の位置
 			FbxVector4 pos = mesh->GetControlPointAt(index);
-			vertices[index].position = XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
-			
+			vertices[index].position
+				= XMVectorSet((float)pos[0], (float)pos[1], (float)pos[2], 0.0f);
+
 			//頂点のUV
 			FbxLayerElementUV* pUV = mesh->GetLayer(0)->GetUVs();
 			int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
 			FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
-			vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+			vertices[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f, 1.0f);
 
-		}		
+			//頂点の法線
+			FbxVector4 normal;
+			mesh->GetPolygonVertexNormal(poly, vertex, normal);
+			vertices[index].normal
+				= XMVectorSet((float)normal[0], (float)normal[1], (float)normal[2], 0.0f);
+		}
 	}
-
-	//頂点バッファ作成
-
+	// 頂点バッファ作成
+	//（自分でやって）
+	//頂点バッファ
 	HRESULT hr;
 	D3D11_BUFFER_DESC bd_vertex;
 	bd_vertex.ByteWidth = sizeof(VERTEX) * vertexCount_;
@@ -185,12 +200,14 @@ void Fbx::InitVertex(FbxMesh* mesh)
 
 }
 
-//インデックスバッファ準備
 void Fbx::InitIndex(FbxMesh* mesh)
 {
 	pIndexBuffer_ = new ID3D11Buffer * [materialCount_];
 
 	int* index = new int[polygonCount_ * 3];
+	indexCountList_ = std::vector<int>(materialCount_);
+	//indexCount_.resize(materialCount_);
+
 
 	for (int i = 0; i < materialCount_; i++)
 	{
@@ -213,7 +230,11 @@ void Fbx::InitIndex(FbxMesh* mesh)
 				}
 			}
 		}
-	
+
+		indexCountList_[i] = count;
+
+		//自力でどうぞ
+		//	（ここもデータサイズを指定するところだけ注意）
 		D3D11_BUFFER_DESC   bd;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.ByteWidth = sizeof(int) * polygonCount_ * 3;
@@ -237,7 +258,6 @@ void Fbx::InitIndex(FbxMesh* mesh)
 
 }
 
-
 void Fbx::InitConstantBuffer()
 {
 	//Quadと一緒
@@ -260,48 +280,48 @@ void Fbx::InitConstantBuffer()
 
 void Fbx::InitMaterial(FbxNode* pNode)
 {
-	materialList_.resize(materialCount_);
-	for (int i = 0;i < materialCount_;i++)
+	//materialCount_の数だけ配列を準備
+	pMaterialList_.resize(materialCount_);
+	for (int i = 0; i < materialCount_; i++)
 	{
 		//i番目のマテリアル情報を取得
 		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);
-
 		//テクスチャ情報
 		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
-
 		//テクスチャの数数
 		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 
 		//テクスチャあり
-		if (fileTextureCount>0)
+		if (fileTextureCount > 0)
 		{
 			FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
 			const char* textureFilePath = textureInfo->GetRelativeFileName();
-			
-			fs::path tPath(textureFilePath);
-			if(fs::is_regular_file(tPath))
-			{
-				materialList_[i].pTexture = new Texture;
-				materialList_[i].pTexture->Load(textureFilePath);
-				
 
+			fs::path tPath(textureFilePath);
+			if (fs::is_regular_file(tPath))
+			{
+				//ここでテクスチャの読み込み
+				pMaterialList_[i].pTexture = new Texture;
+				pMaterialList_[i].pTexture->Load(tPath.string());
 			}
-			//テクスチャ無し
 			else
 			{
-				materialList_[i].pTexture = nullptr;
+				//テクスチャファイルが無いときの処理(エラー）
+
 			}
 
 		}
+		//テクスチャ無し
 		else
 		{
-			materialList_[i].pTexture = nullptr;
+			pMaterialList_[i].pTexture = nullptr;
+
+			//マテリアルの色
+			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
+			FbxDouble3  diffuse = pMaterial->Diffuse;
+			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 		}
-	
+
 	}
 
 }
-
-
-
-

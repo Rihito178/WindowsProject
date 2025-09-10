@@ -2,12 +2,19 @@
 #include <string>
 #include <DirectXMath.h>
 #include "Camera.h"
+#include "Texture.h"
+#include "Direct3D.h"
+#include "Windows.h"
+#include <cassert>
+
+
 
 using namespace DirectX;
 
 //7/15録画40:00ごろ確認⇒完了
 
-Dice::Dice()
+Dice::Dice() 
+	: Quad()
 {
 }
 

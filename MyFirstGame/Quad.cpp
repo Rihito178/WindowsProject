@@ -3,8 +3,8 @@
 #include "Texture.h"
 #include <DirectXMath.h>
 #include <cassert>
-
-
+#include "Direct3D.h"
+#include <windows.h>
 
 
 

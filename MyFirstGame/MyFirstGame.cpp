@@ -16,7 +16,7 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "DirectXTK.lib")
 
-HWND hWnd = nullptr;
+HWND hWnd = nullptr;//ウインドウごとに割り当てるハンドル 識別番号
 
 
 
@@ -161,6 +161,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Direct3D::Release();
 	return (int) msg.wParam;
 }
+
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 //LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //{
@@ -276,6 +277,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 中止メッセージを表示して戻る
 //
 //
+
+//Windows側から自動的に呼ばれる関数
+//hWnd	ウィンドウの識別子
+//message	メッセージの種類
+//wParam メッセージの追加情報
+//lParam	メッセージの追加情報
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)

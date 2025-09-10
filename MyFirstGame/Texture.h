@@ -8,7 +8,7 @@ class Texture
 public:
 	Texture();
 	~Texture();
-	HRESULT Load(LPCWSTR fileName);
+	HRESULT Load(std::string fileName);
 	void Release();
 	HRESULT Initialize();
 	ID3D11SamplerState* GetSampler() { return pSampler_; }
