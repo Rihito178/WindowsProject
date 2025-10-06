@@ -119,7 +119,7 @@ HRESULT Dice::Initialize()
 
 	// テクスチャ読み込み（6面に同じ画像）
 	pTexture_ = new Texture;
-	pTexture_->Load(L"Assets\\dice.png");//画像を表示
+	pTexture_->Load("Assets\\dice.png");//画像を表示
 
 	return S_OK;
 }

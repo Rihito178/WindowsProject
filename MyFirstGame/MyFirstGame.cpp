@@ -10,6 +10,7 @@
 #include <d3d11.h>
 #include "Dice.h"
 #include "transform.h"
+#include "Input.h"
 
 //リンカ
 #pragma comment(lib, "d3d11.lib")
@@ -76,8 +77,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	Camera::Initialize();
+
+
+	//Direct3Dの初期化
 	HRESULT hr;
 	hr = Direct3D::Initialize(WINDOW_WIDTH, WINDOW_HEIGHT, hWnd);
+
+
 
 	if (FAILED(hr))
 	{
@@ -106,7 +112,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	ZeroMemory(&msg, sizeof(msg));
 
 	
-	//Quad* q = new Quad();
+	Quad* q = new Quad();
 	Dice* dice = new Dice;
 	dice->Initialize();  //初期化を忘れずに！
 
@@ -132,9 +138,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			//ゲームの処理
 			//背景の色
 		Camera::Update();
+		Input::Update();
+
+		if (Input::IsKeyDown(DIK_ESCAPE))
+		{
+			static int cnt = 0;
+			cnt++;
+			if (cnt >= 3)
+			{
+				PostQuitMessage(0);
+			}
+		}
+
 		Direct3D::BeginDraw();
 
+		//static Transform transform;
 		Transform transform;
+		transform.position_.x = 1.0f;
 		transform.rotate_.x +=5.0f;
 		
 		XMMATRIX mat = transform.GetWorldMatrix();
@@ -160,7 +180,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	SAFE_DELETE(dice);
 	Direct3D::Release();
 	return (int) msg.wParam;
-}
+};
 
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 //LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -316,6 +336,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+
+	case WM_MOUSEMOVE:
+	{
+
+		int x = LOWORD(lParam);
+		int y = HIWORD(lParam);
+		Input::SetMousePosition(x, y);
+		OutputDebugStringA((std::to_string(x) + "," + std::to_string(y) + "\n").c_str());	
+
+	}
+	break;
+
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}

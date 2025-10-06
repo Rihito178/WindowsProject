@@ -121,7 +121,7 @@ HRESULT Quad::Initialize()
 
 	pRasterState->Release();
 	pTexture_ = new Texture;
-	pTexture_->Load(L"Assets\\dice.png");//‰æ‘œ‚ð•\Ž¦
+	pTexture_->Load("Assets\\dice.png");//‰æ‘œ‚ð•\Ž¦
 	return S_OK;
 }
 
