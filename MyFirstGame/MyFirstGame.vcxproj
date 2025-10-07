@@ -24,7 +24,7 @@
     <ProjectGuid>{c3454039-6e40-436a-9830-9e16e8fd8763}</ProjectGuid>
     <RootNamespace>MyFirstGame</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Windows</ProjectName>
+    <ProjectName>GameObject</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -175,6 +175,7 @@
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Direct3D.h" />
     <ClInclude Include="Engine\Fbx.h" />
+    <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="MyFirstGame.h" />

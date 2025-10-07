@@ -54,6 +54,9 @@
     <ClInclude Include="targetver.h">
       <Filter>ヘッダー ファイル\engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObject.h">
+      <Filter>ソース ファイル\engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Camera.cpp">
