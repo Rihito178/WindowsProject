@@ -1,16 +1,18 @@
 ﻿// MyFirstGame.cpp : アプリケーションのエントリ ポイントを定義します。
 //
 
+#include <d3d11.h>
 #include "framework.h"
 #include "MyFirstGame.h"
-#include "Direct3D.h"
-#include "Quad.h"
-#include "Texture.h"
-#include "Camera.h"
-#include <d3d11.h>
-#include "Dice.h"
-#include "transform.h"
-#include "Input.h"
+#include "Engine\\Direct3D.h"
+
+//#include "Quad.h"
+#include "Engine\\Texture.h"
+#include "Engine\\Camera.h"
+
+//#include "Dice.h"
+#include "Engine\\transform.h"
+#include "Engine\\Input.h"
 
 //リンカ
 #pragma comment(lib, "d3d11.lib")
@@ -112,9 +114,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	ZeroMemory(&msg, sizeof(msg));
 
 	
-	Quad* q = new Quad();
-	Dice* dice = new Dice;
-	dice->Initialize();  //初期化を忘れずに！
+	//Quad* q = new Quad();
+	//Dice* dice = new Dice;
+	//dice->Initialize();  //初期化を忘れずに！
 
 
 	
@@ -158,7 +160,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		transform.rotate_.x +=5.0f;
 		
 		XMMATRIX mat = transform.GetWorldMatrix();
-		dice->Draw(mat);
+		//dice->Draw(mat);
 
 
 
@@ -176,8 +178,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		
 	}
 	
-	dice->Release();
-	SAFE_DELETE(dice);
+	//dice->Release();
+	//SAFE_DELETE(dice);
 	Direct3D::Release();
 	return (int) msg.wParam;
 };

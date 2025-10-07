@@ -172,29 +172,27 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Dice.h" />
-    <ClInclude Include="Direct3D.h" />
-    <ClInclude Include="Fbx.h" />
+    <ClInclude Include="Engine\Camera.h" />
+    <ClInclude Include="Engine\Direct3D.h" />
+    <ClInclude Include="Engine\Fbx.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Input.h" />
+    <ClInclude Include="Engine\Input.h" />
     <ClInclude Include="MyFirstGame.h" />
-    <ClInclude Include="Quad.h" />
+    <ClInclude Include="Engine\Quad.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="transform.h" />
+    <ClInclude Include="Engine\Texture.h" />
+    <ClInclude Include="Engine\transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Dice.cpp" />
-    <ClCompile Include="Direct3D.cpp" />
-    <ClCompile Include="Fbx.cpp" />
-    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Engine\Camera.cpp" />
+    <ClCompile Include="Engine\Direct3D.cpp" />
+    <ClCompile Include="Engine\Fbx.cpp" />
+    <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="MyFirstGame.cpp" />
-    <ClCompile Include="Quad.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="transform.cpp" />
+    <ClCompile Include="Engine\Quad.cpp" />
+    <ClCompile Include="Engine\Texture.cpp" />
+    <ClCompile Include="Engine\transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyFirstGame.rc" />
