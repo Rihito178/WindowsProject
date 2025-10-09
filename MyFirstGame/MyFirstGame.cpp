@@ -13,6 +13,7 @@
 //#include "Dice.h"
 #include "Engine\\transform.h"
 #include "Engine\\Input.h"
+#include "Engine\\RootJob.h"
 
 //リンカ
 #pragma comment(lib, "d3d11.lib")
@@ -30,8 +31,7 @@ const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
 
-
-
+RootJob* pRootJob = nullptr;
 
 
 // グローバル変数:
@@ -92,12 +92,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		PostQuitMessage(0);
 	}
 
-
-	
-
-  
+	Camera::Initialize();
+	Input::Initialize(hWnd);
 
 	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MYFIRSTGAME));
+	
+	MSG msg = {};
+
+	pRootJob = new RootJob(nullptr);
+	pRootJob->Initialize();
+
+
 	//ShowWindow(hWnd, nCmdShow);
 
 	
@@ -109,7 +114,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//Direct3D初期化
 	//Direct3D::Initialize(winW, winH, hWnd);
 
-	MSG msg;
+	/*MSG msg;*/
 	HACCEL aAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MYFIRSTGAME));
 	ZeroMemory(&msg, sizeof(msg));
 
@@ -141,6 +146,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			//背景の色
 		Camera::Update();
 		Input::Update();
+		pRootJob->Update();
+
 
 		if (Input::IsKeyDown(DIK_ESCAPE))
 		{
@@ -154,12 +161,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		Direct3D::BeginDraw();
 
+		//pRootJob
+
+
 		//static Transform transform;
-		Transform transform;
+		/*Transform transform;
 		transform.position_.x = 1.0f;
 		transform.rotate_.x +=5.0f;
 		
-		XMMATRIX mat = transform.GetWorldMatrix();
+		XMMATRIX mat = transform.GetWorldMatrix();*/
 		//dice->Draw(mat);
 
 
@@ -180,7 +190,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	
 	//dice->Release();
 	//SAFE_DELETE(dice);
+	pRootJob->Release();
+	Input::Release();
 	Direct3D::Release();
+
+
 	return (int) msg.wParam;
 };
 
