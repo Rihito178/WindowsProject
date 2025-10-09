@@ -31,7 +31,7 @@ const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
 
-RootJob* pRootJob = nullptr;
+RootJob* Rootjob = nullptr;
 
 
 // グローバル変数:
@@ -99,8 +99,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	
 	MSG msg = {};
 
-	pRootJob = new RootJob(nullptr);
-	pRootJob->Initialize();
+	Rootjob = new RootJob(nullptr);
+	Rootjob->Initialize();
 
 
 	//ShowWindow(hWnd, nCmdShow);
@@ -146,7 +146,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			//背景の色
 		Camera::Update();
 		Input::Update();
-		pRootJob->Update();
+		Rootjob->Update();
 
 
 		if (Input::IsKeyDown(DIK_ESCAPE))
@@ -190,9 +190,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	
 	//dice->Release();
 	//SAFE_DELETE(dice);
-	pRootJob->Release();
+	Rootjob->Release();
 	Input::Release();
 	Direct3D::Release();
+
 
 
 	return (int) msg.wParam;
