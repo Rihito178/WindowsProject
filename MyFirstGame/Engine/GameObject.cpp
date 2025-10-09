@@ -20,5 +20,4 @@ void GameObject::DrawSub()
 		//child->Draw();
 		child->DrawSub();
 	}
-
 }
