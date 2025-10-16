@@ -7,7 +7,6 @@
 #include "Texture.h"
 #include <vector>
 
-
 #pragma comment(lib, "LibFbxSDK-MD.lib")
 #pragma comment(lib, "LibXml2-MD.lib")
 #pragma comment(lib, "zlib-MD.lib")

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Engine/Fbx.h"//•¡”Žg—p‚·‚éê‡
+#include "chilldOden.h"
 
 
 
@@ -17,14 +18,14 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	fbx = new Fbx();
+	fbx = new Fbx;
 
 	fbx->Load("Assets/FBX/Oden.fbx");
 	transform_.scale_.x = 0.7f;
 	transform_.scale_.y = 0.7f;
 	transform_.scale_.z = 0.7f;
 
-
+	Instantiate<chilldOden>(this);
 
 }
 

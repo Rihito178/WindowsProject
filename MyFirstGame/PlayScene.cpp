@@ -13,7 +13,9 @@ void PlayScene::Initialize()
 {
 	Player* player = new Player(this);
 	player->Initialize();
-	childList_.push_back(player);
+	childList.push_back(player);
+	//Instantiate<Player>(this);
+
 }
 
 void PlayScene::Update()

@@ -1,22 +1,21 @@
 #pragma once
-#include "Engine\\GameObject.h"
+#include "Engine/GameObject.h"
 
+class Fbx;
 
-class Fbx;//ポインタのみの時は前方宣言
-
-class Player :
+class chilldOden :
     public GameObject
 {
 public:
-	
-	Player(GameObject* parent);
-	~Player();
-	//純粋仮想関数
+	chilldOden(GameObject* parent);
+	~chilldOden();
 	void Initialize() override;
 	void Update() override;
 	void Draw()override;
 	void Release() override;
+
 private:
-	Fbx* fbx;
+	Fbx* pfbx;
+
 };
 

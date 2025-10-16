@@ -3,7 +3,7 @@
 #include "..\\PlayScene.h"
 
 class RootJob
-	:GameObject
+	:public GameObject
 {
 	
 public:
